@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:3000
+@projectId = 1
+
+### Створити проєкт — 201. Перед повтором видаліть попередній запис або змініть назву.
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "StudyFlow",
+  "description": "Система керування навчальними проєктами",
+  "status": "active"
+}
+
+### Список — 200
+GET {{baseUrl}}/projects
+
+### Отримати запис — 200 (підставте ID зі створення)
+GET {{baseUrl}}/projects/{{projectId}}
+
+### Оновити — 200
+PATCH {{baseUrl}}/projects/{{projectId}}
+Content-Type: application/json
+
+{"status":"completed"}
+
+### Невалідний DTO — 400
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{"name":"ab","status":"unknown"}
+
+### Неправильний ID — 400
+GET {{baseUrl}}/projects/abc
+
+### Конфлікт назви — 409, якщо StudyFlow вже існує
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{"name":"StudyFlow","status":"draft"}
+
+### Видалити — 204, без тіла відповіді
+DELETE {{baseUrl}}/projects/{{projectId}}
+
+### Після видалення — 404
+GET {{baseUrl}}/projects/{{projectId}}
+
+### Bearer необов’язковий і не перевіряється в цій роботі
+GET {{baseUrl}}/projects
+Authorization: Bearer example-token-not-validated

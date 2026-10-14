@@ -1,0 +1,8 @@
+{
+  "statusCode": 404,
+  "errorCode": "PROJECT_NOT_FOUND",
+  "message": "Project with id 10 was not found",
+  "path": "/projects/10",
+  "timestamp": "2026-09-23T10:00:00.000Z",
+  "traceId": "550e8400-e29b-41d4-a716-446655440000"
+}

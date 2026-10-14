@@ -1,0 +1,8 @@
+{
+  "statusCode": 409,
+  "errorCode": "PROJECT_NAME_CONFLICT",
+  "message": "Project with name \"StudyFlow\" already exists",
+  "path": "/projects",
+  "timestamp": "2026-09-23T10:00:00.000Z",
+  "traceId": "550e8400-e29b-41d4-a716-446655440000"
+}

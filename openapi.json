@@ -1,0 +1,1143 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/projects": {
+      "post": {
+        "description": "Назва унікальна після trim, з урахуванням регістру. Status обов’язковий. Дані зберігаються в пам’яті.",
+        "operationId": "ProjectsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              },
+              "examples": {
+                "studyFlow": {
+                  "summary": "Повний запит",
+                  "value": {
+                    "name": "StudyFlow",
+                    "description": "Система керування навчальними проєктами",
+                    "status": "active"
+                  }
+                },
+                "minimal": {
+                  "summary": "Без опису",
+                  "value": {
+                    "name": "New project",
+                    "status": "draft"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Проєкт створено.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "StudyFlow",
+                  "description": "Система керування навчальними проєктами",
+                  "status": "active",
+                  "createdAt": "2026-09-23T10:00:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректний запит.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "malformedJson": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Unexpected end of JSON input",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "validation": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "VALIDATION_ERROR",
+                      "message": "name must be longer than or equal to 3 characters",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "unknownField": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "VALIDATION_ERROR",
+                      "message": "property internalNote should not exist",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Назва вже зайнята іншим проєктом.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "duplicate": {
+                    "value": {
+                      "statusCode": 409,
+                      "errorCode": "PROJECT_NAME_CONFLICT",
+                      "message": "Project with name \"StudyFlow\" already exists",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тіло запиту перевищує ліміт JSON parser (100 KB).",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "tooLarge": {
+                    "value": {
+                      "statusCode": 413,
+                      "errorCode": "PAYLOAD_TOO_LARGE",
+                      "message": "request entity too large",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неочікувана помилка сервера; внутрішні деталі приховано.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "internal": {
+                    "value": {
+                      "statusCode": 500,
+                      "errorCode": "INTERNAL_SERVER_ERROR",
+                      "message": "Internal server error",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Створити проєкт",
+        "tags": [
+          "Projects"
+        ]
+      },
+      "get": {
+        "description": "Повертає всі проєкти. Якщо записів немає — порожній масив. Пагінації та фільтрації немає.",
+        "operationId": "ProjectsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список проєктів.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectResponseDto"
+                  }
+                },
+                "examples": {
+                  "populated": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "name": "StudyFlow",
+                        "description": "Система керування навчальними проєктами",
+                        "status": "active",
+                        "createdAt": "2026-09-23T10:00:00.000Z"
+                      }
+                    ]
+                  },
+                  "empty": {
+                    "value": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректний запит.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "malformedJson": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Unexpected end of JSON input",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тіло запиту перевищує ліміт JSON parser (100 KB).",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "tooLarge": {
+                    "value": {
+                      "statusCode": 413,
+                      "errorCode": "PAYLOAD_TOO_LARGE",
+                      "message": "request entity too large",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неочікувана помилка сервера; внутрішні деталі приховано.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "internal": {
+                    "value": {
+                      "statusCode": 500,
+                      "errorCode": "INTERNAL_SERVER_ERROR",
+                      "message": "Internal server error",
+                      "path": "/projects",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Отримати список проєктів",
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "description": "ParseIntPipe перетворює ID на число. Для відсутнього запису повертається 404.",
+        "operationId": "ProjectsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Цілий числовий ID; нечислові значення повертають 400.",
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Знайдений проєкт.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "StudyFlow",
+                  "description": "Система керування навчальними проєктами",
+                  "status": "active",
+                  "createdAt": "2026-09-23T10:00:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректний запит.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "malformedJson": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Unexpected end of JSON input",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "invalidId": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Validation failed (numeric string is expected)",
+                      "path": "/projects/abc",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Проєкт із заданим числовим ID не знайдено.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "notFound": {
+                    "value": {
+                      "statusCode": 404,
+                      "errorCode": "PROJECT_NOT_FOUND",
+                      "message": "Project with id 10 was not found",
+                      "path": "/projects/10",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тіло запиту перевищує ліміт JSON parser (100 KB).",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "tooLarge": {
+                    "value": {
+                      "statusCode": 413,
+                      "errorCode": "PAYLOAD_TOO_LARGE",
+                      "message": "request entity too large",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неочікувана помилка сервера; внутрішні деталі приховано.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "internal": {
+                    "value": {
+                      "statusCode": 500,
+                      "errorCode": "INTERNAL_SERVER_ERROR",
+                      "message": "Internal server error",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Отримати проєкт за ID",
+        "tags": [
+          "Projects"
+        ]
+      },
+      "patch": {
+        "description": "Принаймні одне поле. Непередані поля зберігаються; description: \"\" очищає опис. Власну назву можна залишити.",
+        "operationId": "ProjectsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Цілий числовий ID.",
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectDto"
+              },
+              "examples": {
+                "complete": {
+                  "summary": "Завершити проєкт",
+                  "value": {
+                    "status": "completed"
+                  }
+                },
+                "rename": {
+                  "summary": "Змінити назву",
+                  "value": {
+                    "name": "StudyFlow v2"
+                  }
+                },
+                "clearDescription": {
+                  "summary": "Очистити опис",
+                  "value": {
+                    "description": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Оновлений проєкт.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponseDto"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "StudyFlow",
+                  "description": "Система керування навчальними проєктами",
+                  "status": "completed",
+                  "createdAt": "2026-09-23T10:00:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректний запит.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "malformedJson": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Unexpected end of JSON input",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "validation": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "VALIDATION_ERROR",
+                      "message": "name must be longer than or equal to 3 characters",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "unknownField": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "VALIDATION_ERROR",
+                      "message": "property internalNote should not exist",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "invalidId": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Validation failed (numeric string is expected)",
+                      "path": "/projects/abc",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "emptyUpdate": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "EMPTY_UPDATE",
+                      "message": "Provide name, description or status to update",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Проєкт із заданим числовим ID не знайдено.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "notFound": {
+                    "value": {
+                      "statusCode": 404,
+                      "errorCode": "PROJECT_NOT_FOUND",
+                      "message": "Project with id 10 was not found",
+                      "path": "/projects/10",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Назва вже зайнята іншим проєктом.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "duplicate": {
+                    "value": {
+                      "statusCode": 409,
+                      "errorCode": "PROJECT_NAME_CONFLICT",
+                      "message": "Project with name \"StudyFlow\" already exists",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тіло запиту перевищує ліміт JSON parser (100 KB).",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "tooLarge": {
+                    "value": {
+                      "statusCode": 413,
+                      "errorCode": "PAYLOAD_TOO_LARGE",
+                      "message": "request entity too large",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неочікувана помилка сервера; внутрішні деталі приховано.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "internal": {
+                    "value": {
+                      "statusCode": 500,
+                      "errorCode": "INTERNAL_SERVER_ERROR",
+                      "message": "Internal server error",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Частково оновити проєкт",
+        "tags": [
+          "Projects"
+        ]
+      },
+      "delete": {
+        "description": "Після успішного видалення повертається 204 без тіла. Повторне видалення повертає 404.",
+        "operationId": "ProjectsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Цілий числовий ID.",
+            "schema": {
+              "example": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Проєкт видалено; тіло відповіді відсутнє."
+          },
+          "400": {
+            "description": "Некоректний запит.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "malformedJson": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Unexpected end of JSON input",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  },
+                  "invalidId": {
+                    "value": {
+                      "statusCode": 400,
+                      "errorCode": "BAD_REQUEST",
+                      "message": "Validation failed (numeric string is expected)",
+                      "path": "/projects/abc",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Проєкт із заданим числовим ID не знайдено.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "notFound": {
+                    "value": {
+                      "statusCode": 404,
+                      "errorCode": "PROJECT_NOT_FOUND",
+                      "message": "Project with id 10 was not found",
+                      "path": "/projects/10",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Тіло запиту перевищує ліміт JSON parser (100 KB).",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "tooLarge": {
+                    "value": {
+                      "statusCode": 413,
+                      "errorCode": "PAYLOAD_TOO_LARGE",
+                      "message": "request entity too large",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Неочікувана помилка сервера; внутрішні деталі приховано.",
+            "headers": {
+              "X-Trace-Id": {
+                "description": "Ідентифікатор помилки, тотожний traceId у тілі.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                },
+                "examples": {
+                  "internal": {
+                    "value": {
+                      "statusCode": 500,
+                      "errorCode": "INTERNAL_SERVER_ERROR",
+                      "message": "Internal server error",
+                      "path": "/projects/1",
+                      "timestamp": "2026-09-23T10:00:00.000Z",
+                      "traceId": "550e8400-e29b-41d4-a716-446655440000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Видалити проєкт",
+        "tags": [
+          "Projects"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Projects API — ПР5",
+    "description": "Продовження ПР3–ПР4. Навчальний CRUD API з in-memory repository. Дані зникають після перезапуску. Bearer-схему додано для документування: перевірки токенів немає, усі операції доступні без авторизації. Репозиторій: https://github.com/Crack8754/PR5",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Crack8754",
+      "url": "https://github.com/Crack8754",
+      "email": ""
+    },
+    "license": {
+      "name": "UNLICENSED",
+      "url": "https://choosealicense.com/no-permission/"
+    }
+  },
+  "tags": [
+    {
+      "name": "Projects",
+      "description": "Створення, перегляд, зміна та видалення проєктів."
+    }
+  ],
+  "servers": [
+    {
+      "url": "/",
+      "description": "Поточний сервер API"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Необов’язковий Authorization: Bearer <token>. У цій роботі немає auth guard або перевірки токенів; схема не забезпечує захист."
+      }
+    },
+    "schemas": {
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Назва після обрізання крайніх пробілів; унікальна з урахуванням регістру.",
+            "minLength": 3,
+            "maxLength": 100,
+            "example": "StudyFlow"
+          },
+          "description": {
+            "type": "string",
+            "description": "Опис; крайні пробіли обрізаються сервісом. Порожній рядок очищає опис.",
+            "maxLength": 500,
+            "example": "Система керування навчальними проєктами"
+          },
+          "status": {
+            "type": "string",
+            "description": "Стан проєкту.",
+            "enum": [
+              "draft",
+              "active",
+              "completed"
+            ],
+            "example": "active"
+          }
+        },
+        "required": [
+          "name",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateProjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Назва після обрізання крайніх пробілів; унікальна з урахуванням регістру.",
+            "minLength": 3,
+            "maxLength": 100,
+            "example": "StudyFlow"
+          },
+          "description": {
+            "type": "string",
+            "description": "Опис; крайні пробіли обрізаються сервісом. Порожній рядок очищає опис.",
+            "maxLength": 500,
+            "example": "Система керування навчальними проєктами"
+          },
+          "status": {
+            "type": "string",
+            "description": "Стан проєкту.",
+            "enum": [
+              "draft",
+              "active",
+              "completed"
+            ],
+            "example": "active"
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "ProjectResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Послідовний числовий ID.",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100,
+            "description": "Унікальна назва.",
+            "example": "StudyFlow"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Опис або порожній рядок.",
+            "example": "Система керування навчальними проєктами"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "completed"
+            ],
+            "description": "Стан проєкту.",
+            "example": "active"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Час створення UTC, ISO 8601.",
+            "example": "2026-09-23T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "status",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "ApiErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599,
+            "example": 404
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "Стабільний код для клієнта. Інші HTTP-помилки можуть мати код HTTP_<status>.",
+            "example": "PROJECT_NOT_FOUND"
+          },
+          "message": {
+            "type": "string",
+            "description": "Людинозрозуміле повідомлення; помилки DTO об’єднані через крапку з комою.",
+            "example": "Project with id 10 was not found"
+          },
+          "path": {
+            "type": "string",
+            "description": "Шлях запиту, включно з query string, якщо є.",
+            "example": "/projects/10"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Час помилки UTC.",
+            "example": "2026-09-23T10:00:00.000Z"
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID v4; також повертається в заголовку X-Trace-Id.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        },
+        "required": [
+          "statusCode",
+          "errorCode",
+          "message",
+          "path",
+          "timestamp",
+          "traceId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "GitHub — практична робота 5",
+    "url": "https://github.com/Crack8754/PR5"
+  },
+  "security": [
+    {},
+    {
+      "bearer": []
+    }
+  ]
+}

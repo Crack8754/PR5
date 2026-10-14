@@ -1,0 +1,43 @@
+{
+  "name": "pr3-projects",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ПР 5: OpenAPI та документація контракту Projects API (продовження ПР3–ПР4)",
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "start:dev": "ts-node src/main.ts",
+    "test": "npm run build && node --test test/*.test.cjs",
+    "openapi:generate": "npm run build && node scripts/generate-openapi.cjs",
+    "openapi:check": "npm run build && node scripts/generate-openapi.cjs --check",
+    "openapi:lint": "node scripts/lint-openapi.cjs",
+    "verify": "npm run openapi:check && npm run openapi:lint && npm test"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.4.7",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0",
+    "@redocly/cli": "^2.63.0",
+    "@types/node": "^22.0.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Crack8754/PR5.git"
+  }
+}
